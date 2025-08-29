@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Eliminar Cuenta | ONTIME-SERVICE S.A.S.</title>
+  <meta name="description" content="Página para eliminar tu cuenta y datos de ONTIME-SERVICE S.A.S."/>
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+  
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#101828;
+      --muted:#9aa4b2;
+      --text:#e6eaf0;
+      --brand:#22d3ee;
+      --accent:#a78bfa;
+      --border:#1f2a44;
+      --ok:#16a34a;
+      --warn:#ca8a04;
+      --danger:#dc2626;
+    }
+    *{box-sizing:border-box}
+    body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Inter,Arial,sans-serif;background:var(--bg);color:var(--text);margin:0;line-height:1.6}
+    
+    .container{max-width:600px;margin:0 auto;padding:20px}
+    
+    header{text-align:center;margin-bottom:40px}
+    .badge{display:inline-block;background:rgba(34,211,238,.1);color:var(--brand);border:1px solid var(--border);padding:4px 10px;border-radius:999px;font-size:12px;margin-bottom:8px}
+    h1{font-size:28px;margin:6px 0 0}
+    .subtitle{color:var(--muted);font-size:16px;margin-top:6px}
+    
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin:16px 0;box-shadow:0 4px 24px rgba(2,8,23,.18)}
+    
+    .form-group{margin-bottom:20px}
+    label{display:block;margin-bottom:8px;font-weight:500;color:var(--text)}
+    input{width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:16px}
+    input:focus{outline:none;border-color:var(--brand)}
+    
+    .btn{display:inline-block;padding:12px 24px;border:none;border-radius:8px;font-size:16px;font-weight:500;cursor:pointer;text-decoration:none;text-align:center;transition:all 0.2s}
+    .btn-primary{background:var(--brand);color:var(--bg)}
+    .btn-primary:hover{background:#1bc5d4}
+    .btn-danger{background:var(--danger);color:white}
+    .btn-danger:hover{background:#b91c1c}
+    .btn-secondary{background:var(--border);color:var(--text)}
+    .btn-secondary:hover{background:var(--muted)}
+    
+    .btn-google{background:#ffffff;color:#333;border:1px solid #dadce0}
+    .btn-google:hover{background:#f8f9fa;box-shadow:0 1px 3px rgba(0,0,0,0.12)}
+    
+    .btn:disabled{opacity:0.6;cursor:not-allowed}
+    
+    .alert{padding:16px;border-radius:8px;margin:16px 0;border-left:4px solid}
+    .alert-success{border-color:var(--ok);background:rgba(22,163,74,.1);color:var(--ok)}
+    .alert-error{border-color:var(--danger);background:rgba(220,38,38,.1);color:var(--danger)}
+    .alert-warning{border-color:var(--warn);background:rgba(202,138,4,.1);color:var(--warn)}
+    .alert-info{border-color:var(--brand);background:rgba(34,211,238,.1);color:var(--brand)}
+    
+    .hidden{display:none}
+    
+    .user-info{background:rgba(34,211,238,.05);border:1px solid var(--border);border-radius:12px;padding:20px;margin:20px 0}
+    .user-info h3{margin-top:0;color:var(--brand)}
+    .info-row{display:flex;justify-content:space-between;margin:8px 0;padding:8px 0;border-bottom:1px solid var(--border)}
+    .info-row:last-child{border-bottom:none}
+    .info-label{font-weight:500;color:var(--muted)}
+    .info-value{color:var(--text)}
+    
+    .loading{text-align:center;padding:40px}
+    .spinner{border:3px solid var(--border);border-top:3px solid var(--brand);border-radius:50%;width:40px;height:40px;animation:spin 1s linear infinite;margin:0 auto 20px}
+    @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+    
+    .footer{text-align:center;margin-top:40px;color:var(--muted);font-size:14px}
+    .footer a{color:var(--brand)}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="badge">ONTIME-SERVICE S.A.S.</span>
+      <h1>Eliminar Mi Cuenta</h1>
+      <div class="subtitle">Accede y elimina permanentemente tu cuenta y todos tus datos</div>
+    </header>
+
+    <!-- Formulario de inicio de sesión -->
+    <div id="loginSection" class="card">
+      <h2>Iniciar Sesión</h2>
+      <p>Para eliminar tu cuenta, haz clic en "Continuar con Google" para acceder con tu cuenta de Google.</p>
+      
+      <button type="button" id="googleLoginBtn" class="btn btn-google" style="width:100%;display:flex;align-items:center;justify-content:center;gap:12px">
+        <svg width="20" height="20" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        Continuar con Google
+      </button>
+      
+             <div id="loginAlert" class="alert hidden"></div>
+       
+       <div class="alert alert-info" style="margin-top:20px;font-size:14px">
+         <strong>💡 Tip:</strong> Usa tu cuenta de Google vinculada a ONTIME para un acceso rápido y seguro.
+         <br><br>
+         <strong>⚠️ Nota:</strong> Solo cuentas de Google registradas en ONTIME pueden acceder a esta función.
+       </div>
+    </div>
+
+    <!-- Información del usuario y confirmación de eliminación -->
+    <div id="userSection" class="card hidden">
+      <h2>Confirmar Eliminación de Cuenta</h2>
+      
+      <div id="userInfo" class="user-info">
+        <h3>Información de tu Cuenta</h3>
+        <div id="userDetails"></div>
+      </div>
+      
+      <div class="alert alert-warning">
+        <strong>⚠️ ADVERTENCIA IMPORTANTE:</strong><br>
+        Al eliminar tu cuenta, se borrarán <strong>PERMANENTEMENTE</strong> todos tus datos, incluyendo:
+        <ul style="margin:8px 0 8px 20px">
+          <li>Información personal (nombre, correo, teléfono, cédula)</li>
+          <li>Datos del vehículo (placa, color, unidad)</li>
+          <li>Historial de pedidos y chats</li>
+          <li>Saldo y transacciones</li>
+          <li>Foto de perfil</li>
+          <li>Ubicaciones y tokens</li>
+        </ul>
+        <strong>Esta acción NO se puede deshacer.</strong>
+      </div>
+      
+      <form id="deleteForm">
+        <div class="form-group">
+          <label for="confirmEmail">Confirma tu correo electrónico</label>
+          <input type="email" id="confirmEmail" name="confirmEmail" required placeholder="Repite tu correo para confirmar">
+        </div>
+        
+        <div class="form-group">
+          <label for="confirmText">Escribe "ELIMINAR" para confirmar</label>
+          <input type="text" id="confirmText" name="confirmText" required placeholder="ELIMINAR">
+        </div>
+        
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="confirmCheckbox" required style="width:auto;margin-right:8px">
+            Entiendo que esta acción es irreversible y eliminará permanentemente todos mis datos
+          </label>
+        </div>
+        
+        <div style="display:flex;gap:12px;margin-top:24px">
+          <button type="button" id="cancelBtn" class="btn btn-secondary" style="flex:1">Cancelar</button>
+          <button type="submit" id="deleteBtn" class="btn btn-danger" style="flex:1">ELIMINAR CUENTA</button>
+        </div>
+      </form>
+      
+      <div id="deleteAlert" class="alert hidden"></div>
+    </div>
+
+    <!-- Estado de carga -->
+    <div id="loadingSection" class="loading hidden">
+      <div class="spinner"></div>
+      <p>Procesando tu solicitud...</p>
+    </div>
+
+    <!-- Confirmación final -->
+    <div id="successSection" class="card hidden">
+      <div class="alert alert-success">
+        <h3>✅ Cuenta Eliminada Exitosamente</h3>
+        <p>Tu cuenta y todos tus datos han sido eliminados permanentemente de nuestro sistema.</p>
+        <p>Gracias por haber sido parte de ONTIME-SERVICE S.A.S.</p>
+      </div>
+      
+      <div style="text-align:center;margin-top:24px">
+        <a href="politica-privacidad-ontime.html" class="btn btn-secondary">Volver a la Política de Privacidad</a>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>¿Necesitas ayuda? <a href="mailto:info@ontimeservices.click">Contáctanos</a></p>
+      <p>&copy; 2025 ONTIME-SERVICE S.A.S. Todos los derechos reservados.</p>
+    </div>
+  </div>
+
+  <script>
+    // Configuración de Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyCuZBtU4uGWM-3a-HDhe2t37yBmSmxfk2g",
+      authDomain: "ontime-20dbf.firebaseapp.com",
+      projectId: "ontime-20dbf",
+      storageBucket: "ontime-20dbf.appspot.com",
+      messagingSenderId: "582213649949",
+      appId: "1:582213649949:web:c80250453f527e3d84a8f4",
+      measurementId: "G-PVPEK5PHBV"
+    };
+
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    // Elementos del DOM
+    const loginSection = document.getElementById('loginSection');
+    const userSection = document.getElementById('userSection');
+    const loadingSection = document.getElementById('loadingSection');
+    const successSection = document.getElementById('successSection');
+    const googleLoginBtn = document.getElementById('googleLoginBtn');
+    const deleteForm = document.getElementById('deleteForm');
+    const loginAlert = document.getElementById('loginAlert');
+    const deleteAlert = document.getElementById('deleteAlert');
+    const userDetails = document.getElementById('userDetails');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const confirmEmail = document.getElementById('confirmEmail');
+    const confirmText = document.getElementById('confirmText');
+    const confirmCheckbox = document.getElementById('confirmCheckbox');
+
+    let currentUser = null;
+    let userData = null;
+
+    // Verificar estado de autenticación
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        currentUser = user;
+        showUserSection();
+        loadUserData();
+      } else {
+        currentUser = null;
+        showLoginSection();
+      }
+    });
+
+    // Mostrar sección de login
+    function showLoginSection() {
+      loginSection.classList.remove('hidden');
+      userSection.classList.add('hidden');
+      loadingSection.classList.add('hidden');
+      successSection.classList.add('hidden');
+    }
+
+    // Mostrar sección de usuario
+    function showUserSection() {
+      loginSection.classList.add('hidden');
+      userSection.classList.remove('hidden');
+      loadingSection.classList.add('hidden');
+      successSection.classList.add('hidden');
+      
+      // Pre-llenar el correo de confirmación
+      confirmEmail.value = currentUser.email;
+    }
+
+    // Mostrar sección de carga
+    function showLoading() {
+      loadingSection.classList.remove('hidden');
+      loginSection.classList.add('hidden');
+      userSection.classList.add('hidden');
+      successSection.classList.add('hidden');
+    }
+
+    // Mostrar sección de éxito
+    function showSuccess() {
+      successSection.classList.remove('hidden');
+      loginSection.classList.add('hidden');
+      userSection.classList.add('hidden');
+      loadingSection.classList.add('hidden');
+    }
+
+    // Cargar datos del usuario
+    async function loadUserData() {
+      try {
+        const userDoc = await db.collection('conductores').doc(currentUser.email).get();
+        if (userDoc.exists) {
+          userData = userDoc.data();
+          displayUserInfo();
+        } else {
+          showAlert(deleteAlert, 'No se encontraron datos de usuario', 'error');
+        }
+      } catch (error) {
+        console.error('Error cargando datos:', error);
+        showAlert(deleteAlert, 'Error cargando datos del usuario', 'error');
+      }
+    }
+
+    // Mostrar información del usuario
+    function displayUserInfo() {
+      if (!userData) return;
+      
+      userDetails.innerHTML = `
+        <div class="info-row">
+          <span class="info-label">Nombre:</span>
+          <span class="info-value">${userData.nombre || 'No disponible'}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Correo:</span>
+          <span class="info-value">${userData.correo || 'No disponible'}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Teléfono:</span>
+          <span class="info-value">${userData.telefono || 'No disponible'}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Cédula:</span>
+          <span class="info-value">${userData.cedula || 'No disponible'}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Placa:</span>
+          <span class="info-value">${userData.placa || 'No disponible'}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Unidad:</span>
+          <span class="info-value">${userData.unidad || 'No disponible'}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Saldo:</span>
+          <span class="info-value">$${userData.saldo ? userData.saldo.toFixed(2) : '0.00'}</span>
+        </div>
+      `;
+    }
+
+    // Mostrar alertas
+    function showAlert(element, message, type) {
+      element.textContent = message;
+      element.className = `alert alert-${type}`;
+      element.classList.remove('hidden');
+      
+      setTimeout(() => {
+        element.classList.add('hidden');
+      }, 5000);
+    }
+
+    // El botón de Google ya está configurado en el código existente
+
+    // Manejar inicio de sesión con Google
+    googleLoginBtn.addEventListener('click', async () => {
+      try {
+        // Verificar si estamos en un entorno válido
+        if (location.protocol !== 'http:' && location.protocol !== 'https:' && location.protocol !== 'chrome-extension:') {
+          showAlert(loginAlert, 'Este entorno no soporta el inicio de sesión con Google.', 'error');
+          return;
+        }
+
+        // Verificar si el almacenamiento web está habilitado
+        try {
+          localStorage.setItem('test', 'test');
+          localStorage.removeItem('test');
+        } catch (storageError) {
+          showAlert(loginAlert, 'El almacenamiento web no está habilitado. No se puede continuar.', 'error');
+          return;
+        }
+
+        showLoading();
+        
+        const provider = new firebase.auth.GoogleAuthProvider();
+        // Solicitar permisos adicionales si es necesario
+        provider.addScope('email');
+        provider.addScope('profile');
+        
+        // Intentar con popup primero, si falla usar redirect
+        try {
+          const result = await auth.signInWithPopup(provider);
+          if (result && result.user) {
+            await handleGoogleSignInResult(result);
+          } else {
+            showAlert(loginAlert, 'Inicio de sesión cancelado o fallido', 'error');
+            showLoginSection();
+          }
+        } catch (popupError) {
+          console.log('Popup falló, intentando con redirect:', popupError);
+          
+          // Verificar si el error es de dominio no autorizado
+          if (popupError.code === 'auth/unauthorized-domain') {
+            showAlert(loginAlert, 'Este dominio no está autorizado para Google. Contacta al administrador.', 'error');
+            showLoginSection();
+            return;
+          }
+          
+          // Si popup falla, usar redirect
+          try {
+            await auth.signInWithRedirect(provider);
+          } catch (redirectError) {
+            if (redirectError.code === 'auth/unauthorized-domain') {
+              showAlert(loginAlert, 'Este dominio no está autorizado para Google. Contacta al administrador.', 'error');
+            } else {
+              showAlert(loginAlert, 'Error en el inicio de sesión con Google. Intenta nuevamente.', 'error');
+            }
+            showLoginSection();
+          }
+        }
+        
+      } catch (error) {
+        console.error('Error en login con Google:', error);
+        let errorMessage = 'Error al iniciar sesión con Google';
+        
+        if (error.code === 'auth/popup-closed-by-user') {
+          errorMessage = 'Inicio de sesión cancelado';
+        } else if (error.code === 'auth/popup-blocked') {
+          errorMessage = 'El navegador bloqueó la ventana de inicio de sesión. Permite popups para este sitio.';
+        } else         if (error.code === 'auth/account-exists-with-different-credential') {
+          errorMessage = 'Ya existe una cuenta con este correo usando otro método de inicio de sesión.';
+        } else if (error.code === 'auth/operation-not-supported-in-this-environment') {
+          errorMessage = 'Tu navegador no soporta el inicio de sesión con Google.';
+        } else if (error.code === 'auth/unauthorized-domain') {
+          errorMessage = 'Este dominio no está autorizado para Google. Contacta al administrador.';
+        }
+        
+        showAlert(loginAlert, errorMessage, 'error');
+        showLoginSection();
+      }
+    });
+
+    // Función para manejar el resultado del login con Google
+    async function handleGoogleSignInResult(result) {
+      try {
+        // Verificar que el resultado y el usuario existan
+        if (!result || !result.user || !result.user.email) {
+          console.error('Resultado de Google inválido:', result);
+          showAlert(loginAlert, 'Error en el inicio de sesión con Google. Intenta nuevamente.', 'error');
+          showLoginSection();
+          return;
+        }
+
+        // Verificar si el usuario ya existe en la base de datos
+        const userDoc = await db.collection('conductores').doc(result.user.email).get();
+        
+        if (!userDoc.exists) {
+          // Si es un usuario nuevo, mostrar mensaje de error
+          await auth.signOut();
+          showAlert(loginAlert, 'Esta cuenta de Google no está registrada en ONTIME. Contacta al administrador.', 'error');
+          showLoginSection();
+          return;
+        }
+        
+        showAlert(loginAlert, 'Inicio de sesión con Google exitoso', 'success');
+        
+      } catch (error) {
+        console.error('Error verificando usuario:', error);
+        await auth.signOut();
+        showAlert(loginAlert, 'Error verificando tu cuenta. Intenta nuevamente.', 'error');
+        showLoginSection();
+      }
+    }
+
+    // Verificar si hay un resultado de redirect pendiente
+    auth.getRedirectResult().then((result) => {
+      if (result && result.user) {
+        // Usuario regresó de Google OAuth
+        handleGoogleSignInResult(result);
+      }
+    }).catch((error) => {
+      console.error('Error en redirect result:', error);
+      showAlert(loginAlert, 'Error en el inicio de sesión con Google. Intenta nuevamente.', 'error');
+    });
+
+    // Función para verificar si Google está disponible
+    function checkGoogleAvailability() {
+      try {
+        // Verificar protocolo
+        if (location.protocol !== 'http:' && location.protocol !== 'https:' && location.protocol !== 'chrome-extension:') {
+          return false;
+        }
+
+        // Verificar almacenamiento web
+        localStorage.setItem('test', 'test');
+        localStorage.removeItem('test');
+        
+        return true;
+      } catch (error) {
+        return false;
+      }
+    }
+
+    // Verificar disponibilidad al cargar la página
+    if (!checkGoogleAvailability()) {
+      googleLoginBtn.disabled = true;
+      googleLoginBtn.title = 'Google no está disponible en este entorno';
+      googleLoginBtn.style.opacity = '0.5';
+      googleLoginBtn.style.cursor = 'not-allowed';
+    }
+
+    // Manejar cancelación
+    cancelBtn.addEventListener('click', () => {
+      auth.signOut();
+    });
+
+    // Manejar eliminación de cuenta
+    deleteForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = confirmEmail.value;
+      const confirmTextValue = confirmText.value;
+      const checkbox = confirmCheckbox.checked;
+      
+      // Validaciones
+      if (email !== currentUser.email) {
+        showAlert(deleteAlert, 'El correo de confirmación no coincide', 'error');
+        return;
+      }
+      
+      if (confirmTextValue !== 'ELIMINAR') {
+        showAlert(deleteAlert, 'Debes escribir "ELIMINAR" para confirmar', 'error');
+        return;
+      }
+      
+      if (!checkbox) {
+        showAlert(deleteAlert, 'Debes aceptar que entiendes las consecuencias', 'error');
+        return;
+      }
+      
+      try {
+        showLoading();
+        
+        // Eliminar datos de Firestore
+        if (userData) {
+          // Eliminar documento del conductor
+          await db.collection('conductores').doc(currentUser.email).delete();
+          
+          // Eliminar foto del storage si existe
+          if (userData.foto) {
+            try {
+              const photoRef = storage.refFromURL(userData.foto);
+              await photoRef.delete();
+            } catch (photoError) {
+              console.warn('No se pudo eliminar la foto:', photoError);
+            }
+          }
+          
+          // Eliminar otros documentos relacionados si existen
+          try {
+            // Eliminar historial de pedidos
+            const pedidosQuery = await db.collection('historialPedido')
+              .where('correo', '==', currentUser.email)
+              .get();
+            
+            const pedidosBatch = db.batch();
+            pedidosQuery.docs.forEach(doc => {
+              pedidosBatch.delete(doc.ref);
+            });
+            await pedidosBatch.commit();
+            
+            // Eliminar chats
+            const chatsQuery = await db.collection('chats')
+              .where('correo', '==', currentUser.email)
+              .get();
+            
+            const chatsBatch = db.batch();
+            chatsQuery.docs.forEach(doc => {
+              chatsBatch.delete(doc.ref);
+            });
+            await chatsBatch.commit();
+            
+          } catch (relatedError) {
+            console.warn('Error eliminando documentos relacionados:', relatedError);
+          }
+        }
+        
+        // Eliminar cuenta de autenticación
+        await currentUser.delete();
+        
+        showSuccess();
+        
+      } catch (error) {
+        console.error('Error eliminando cuenta:', error);
+        let errorMessage = 'Error al eliminar la cuenta';
+        
+        if (error.code === 'auth/requires-recent-login') {
+          errorMessage = 'Por seguridad, debes volver a iniciar sesión. Intenta nuevamente.';
+          auth.signOut();
+        }
+        
+        showAlert(deleteAlert, errorMessage, 'error');
+        showUserSection();
+      }
+    });
+
+    // Validación en tiempo real del texto de confirmación
+    confirmText.addEventListener('input', (e) => {
+      const value = e.target.value;
+      const deleteBtn = document.getElementById('deleteBtn');
+      
+      if (value === 'ELIMINAR') {
+        deleteBtn.disabled = false;
+        confirmText.style.borderColor = 'var(--ok)';
+      } else {
+        deleteBtn.disabled = true;
+        confirmText.style.borderColor = 'var(--border)';
+      }
+    });
+
+    // Validación del correo de confirmación
+    confirmEmail.addEventListener('input', (e) => {
+      const value = e.target.value;
+      const deleteBtn = document.getElementById('deleteBtn');
+      
+      if (value === currentUser?.email) {
+        confirmEmail.style.borderColor = 'var(--ok)';
+      } else {
+        confirmEmail.style.borderColor = 'var(--danger)';
+        deleteBtn.disabled = true;
+      }
+    });
+
+    // Validación del checkbox
+    confirmCheckbox.addEventListener('change', (e) => {
+      const deleteBtn = document.getElementById('deleteBtn');
+      deleteBtn.disabled = !e.target.checked;
+    });
+  </script>
+</body>
+</html>
