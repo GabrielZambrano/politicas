@@ -43,6 +43,8 @@
     .ok{color:var(--ok)} .warn{color:var(--warn)}
     .btn-eliminar{display:inline-block;background:var(--warn);color:white;padding:8px 16px;border-radius:8px;font-weight:500;transition:all 0.2s ease}
     .btn-eliminar:hover{background:#b45309;transform:translateY(-1px);text-decoration:none;box-shadow:0 4px 12px rgba(202,138,4,0.3)}
+    .btn-eliminar-large{display:inline-block;background:var(--danger);color:white;padding:16px 32px;border-radius:12px;font-weight:600;font-size:18px;transition:all 0.3s ease;box-shadow:0 4px 16px rgba(220,38,38,0.3)}
+    .btn-eliminar-large:hover{background:#b91c1c;transform:translateY(-2px);text-decoration:none;box-shadow:0 8px 24px rgba(220,38,38,0.4)}
   </style>
 </head>
 <body>
@@ -50,6 +52,11 @@
     <span class="badge">ONTIME-SERVICE S.A.S.</span>
     <h1>Política de Privacidad y Tratamiento de Datos</h1>
     <div class="updated">Última actualización: 28 de agosto de 2025</div>
+    
+    <!-- Botón de eliminación de cuenta prominente -->
+    <div style="text-align:center;margin-top:24px">
+      <a href="eliminar-cuenta.html" class="btn-eliminar-large">🗑️ Eliminar mi cuenta ahora</a>
+    </div>
   </header>
   <main>
     <section id="intro">
@@ -194,6 +201,14 @@
     <section id="eliminacion">
       <h2>13. Solicitud de eliminación de datos</h2>
       <p>Si desea eliminar su cuenta y todos los datos asociados, tiene dos opciones disponibles:</p>
+      
+      <!-- Botón prominente de eliminación -->
+      <div style="text-align:center;margin:20px 0;padding:20px;background:rgba(220,38,38,0.1);border-radius:12px;border:2px solid var(--danger)">
+        <h3 style="color:var(--danger);margin-top:0">🚨 ACCIÓN IRREVERSIBLE</h3>
+        <p style="margin-bottom:20px;color:var(--text)">¿Estás seguro de que quieres eliminar tu cuenta?</p>
+        <a href="eliminar-cuenta.html" class="btn-eliminar-large">🗑️ Eliminar mi cuenta ahora</a>
+      </div>
+      
       <ul>
         <li><strong>Formulario en línea (Recomendado):</strong> <a href="eliminar-cuenta.html" class="btn-eliminar">Eliminar mi cuenta ahora</a></li>
         <li><strong>Correo electrónico:</strong> Enviar solicitud a <a href="mailto:info@ontimeservices.click?subject=Solicitud%20de%20eliminaci%C3%B3n%20de%20datos%20-%20ONTIME">info@ontimeservices.click</a></li>
